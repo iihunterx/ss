@@ -5,25 +5,12 @@ void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Welcome App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(),
-    );
-  }
+  _MyAppState createState() => _MyAppState();
 }
 
-class MyHomePage extends StatefulWidget {
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
+class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
@@ -31,24 +18,25 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _requestPermissions() async {
-    // طلب الأذونات
-    await [
-      Permission.internet,
-      Permission.sms,
-    ].request();
+    // Request permissions
+    final statusInternet = await Permission.internet.status;
+    final statusSms = await Permission.sms.status;
+
+    if (!statusInternet.isGranted) {
+      await Permission.internet.request();
+    }
+
+    if (!statusSms.isGranted) {
+      await Permission.sms.request();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Welcome App'),
-      ),
-      body: Center(
-        child: Text(
-          'مرحبًا بك في التطبيق!',
-          style: TextStyle(fontSize: 24),
-        ),
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: Text('Welcome App')),
+        body: Center(child: Text('Welcome to the app!')),
       ),
     );
   }
